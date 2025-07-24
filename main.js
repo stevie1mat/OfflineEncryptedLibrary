@@ -156,10 +156,8 @@ ipcMain.handle('login', async (event, username, password) => {
   return new Promise((resolve) => {
     db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
       if (!row) return resolve(null);
-      const deviceId = getDeviceId();
-      if (row.device_id !== deviceId) return resolve(null);
-      if (!bcrypt.compareSync(password, row.password_hash)) return resolve(null);
-      aesKey = crypto.scryptSync(password + deviceId, 'mylibraryvault', 32);
+      // No password check, just username
+      aesKey = crypto.scryptSync(username + getDeviceId(), 'mylibraryvault', 32);
       resolve({ username });
     });
   });

@@ -32,72 +32,24 @@ function renderLogin() {
   console.log('[MyLibraryVault] renderLogin()');
   const container = document.createElement('div');
   container.className = 'centered';
-  const form = document.createElement('form');
-  form.className = 'form';
-  form.innerHTML = `
-    <h2 id="login-title">Login to MyLibraryVault</h2>
-    <input id="username" type="text" placeholder="Username" required style="width:100%;margin-bottom:16px;padding:8px;" />
-    <input id="password" type="password" placeholder="Password" required style="width:100%;margin-bottom:16px;padding:8px;" />
-    <div id="login-error" style="color:red;margin-bottom:8px;"></div>
-    <button class="btn" type="submit" style="width:100%;">Login</button>
-    <button class="btn" type="button" id="register-btn" style="width:100%;margin-top:8px;background:none;color:#2d72d9;">Create an Account</button>
-    <button class="btn" type="button" id="download-btn" style="width:100%;margin-top:8px;display:none;">Download Library</button>
-    <div id="download-msg" style="color:green;margin-top:8px;display:none;">Library downloaded! You can now login.</div>
-  `;
-  container.appendChild(form);
-  root.appendChild(container);
+  // Use the new login form in index.html
+  // Only username is required
+  // Attach event handler to #login-form
+  root.innerHTML = '';
+  root.appendChild(document.querySelector('.login-container'));
 
-  let isRegister = false;
-  let downloaded = false;
-
-  if (window.api && window.api.isFirstRun) {
-    window.api.isFirstRun().then(fr => {
-      firstRun = fr;
-      console.log('[MyLibraryVault] isFirstRun:', firstRun);
-      if (firstRun) {
-        document.getElementById('login-title').textContent = 'Register to MyLibraryVault';
-        isRegister = true;
-        document.getElementById('register-btn').style.display = 'none';
-        document.getElementById('download-btn').style.display = '';
-      }
-    }).catch(e => console.error('[MyLibraryVault] isFirstRun error:', e));
-  } else {
-    console.error('[MyLibraryVault] window.api.isFirstRun is not available');
-  }
-
+  const form = document.getElementById('login-form');
   form.onsubmit = async e => {
     e.preventDefault();
     const username = form.username.value;
-    const password = form.password.value;
     document.getElementById('login-error').textContent = '';
     try {
-      if (isRegister) {
-        const u = await window.api.register(username, password);
-        if (u) { user = u; render(); }
-        else document.getElementById('login-error').textContent = 'Registration failed';
-      } else {
-        const u = await window.api.login(username, password);
-        if (u) { user = u; render(); }
-        else document.getElementById('login-error').textContent = 'Invalid credentials';
-      }
+      const u = await window.api.login(username, ''); // Pass empty string for password
+      if (u) { user = u; render(); }
+      else document.getElementById('login-error').textContent = 'Invalid username';
     } catch (err) {
-      console.error('[MyLibraryVault] login/register error:', err);
+      console.error('[MyLibraryVault] login error:', err);
       document.getElementById('login-error').textContent = 'Authentication error';
-    }
-  };
-  document.getElementById('register-btn').onclick = () => {
-    isRegister = !isRegister;
-    document.getElementById('login-title').textContent = isRegister ? 'Register to MyLibraryVault' : 'Login to MyLibraryVault';
-    document.querySelector('button[type=submit]').textContent = isRegister ? 'Register' : 'Login';
-    document.getElementById('download-btn').style.display = (isRegister && firstRun) ? '' : 'none';
-  };
-  document.getElementById('download-btn').onclick = async () => {
-    try {
-      await window.api.downloadBooks();
-      downloaded = true;
-      document.getElementById('download-msg').style.display = '';
-    } catch (err) {
-      console.error('[MyLibraryVault] downloadBooks error:', err);
     }
   };
 }
