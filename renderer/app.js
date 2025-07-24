@@ -175,7 +175,12 @@ function renderLogin() {
     try {
       const u = await window.api.login(username, '');
       if (u) {
-        showSuccessDialog('Login successful!', () => { user = u; render(); });
+        showSuccessDialog('Login successful!', () => {
+          user = u;
+          if (typeof renderDashboard === 'function') {
+            renderDashboard();
+          }
+        });
       }
       else showDialog(t.error);
     } catch (err) {
