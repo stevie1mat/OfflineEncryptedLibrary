@@ -177,8 +177,16 @@ function renderLogin() {
       if (u) {
         showSuccessDialog('Login successful!', () => {
           user = u;
+          console.log('[SecureRead] Login success. typeof renderDashboard:', typeof window.renderDashboard);
           if (typeof renderDashboard === 'function') {
-            renderDashboard();
+            try {
+              renderDashboard();
+              console.log('[SecureRead] renderDashboard called.');
+            } catch (err) {
+              console.error('[SecureRead] Error calling renderDashboard:', err);
+            }
+          } else {
+            console.error('[SecureRead] renderDashboard is not a function.');
           }
         });
       }
@@ -342,9 +350,18 @@ render();
 
 // Ensure dashboard.js is loaded
 if (!window.renderDashboard) {
+  console.log('[SecureRead] Attempting to load dashboard.js...');
   const script = document.createElement('script');
   script.src = 'dashboard.js';
+  script.onload = () => {
+    console.log('[SecureRead] dashboard.js loaded. renderDashboard:', typeof window.renderDashboard);
+  };
+  script.onerror = () => {
+    console.error('[SecureRead] Failed to load dashboard.js');
+  };
   document.head.appendChild(script);
+} else {
+  console.log('[SecureRead] dashboard.js already loaded.');
 }
 
 // Add spinner CSS
