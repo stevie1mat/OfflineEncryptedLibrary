@@ -173,4 +173,5 @@ function renderDashboard() {
 }
 
 // Call this after login success
-// renderDashboard(); 
+// renderDashboard();
+window.renderDashboard = renderDashboard; 
