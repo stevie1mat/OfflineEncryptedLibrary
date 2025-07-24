@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyLibraryVault</title>
+  <title>SecureRead</title>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: 'Urbanist', 'Segoe UI', Arial, sans-serif;
       background: #eaf7ef;
       min-height: 100vh;
       position: relative;
@@ -165,34 +166,7 @@
 <body>
   <div class="bg-shape" style="top: 10%; left: 5%; width: 120px; height: 120px; background: #3ecf8e; border-radius: 50%;"></div>
   <div class="bg-shape" style="bottom: 8%; right: 8%; width: 80px; height: 80px; background: #3ecf8e; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;"></div>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="login-left">
-        <div>
-          <div class="login-logo">Bon<span>Santé</span></div>
-          <div class="lang-select">🇫🇷 Fr <span style="font-size:0.8em;">▼</span></div>
-          <div class="login-title">Bonjour!</div>
-          <div class="login-subtitle">Pour vous connecter à votre compte, renseignez votre adresse email ainsi que votre mot de passe.</div>
-          <form class="login-form" id="login-form">
-            <input id="username" type="text" placeholder="Votre nom d'utilisateur" required />
-            <div id="login-error" style="color:red;margin-bottom:8px;"></div>
-            <button class="login-btn" type="submit">Se connecter</button>
-          </form>
-        </div>
-        <div class="support">
-          N'hésitez pas à nous contacter<br />
-          <a href="mailto:support@bonsante.com">support@bonsante.com</a>
-        </div>
-      </div>
-      <div class="login-right">
-        <img class="login-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="plant" />
-        <div class="login-overlay">
-          <div class="overlay-title">Precision medicine is the new gold standard for cancer treatment</div>
-          <div class="overlay-desc">The resulting interactive report includes updated information about approved or investigational treatments for each patient.</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="root"></div>
   <script src="app.js"></script>
 </body>
 </html> 

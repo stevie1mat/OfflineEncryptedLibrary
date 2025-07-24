@@ -14,6 +14,44 @@ if (!root) {
   console.error('[MyLibraryVault] #root element not found in index.html');
 }
 
+// Language translations
+const translations = {
+  en: {
+    title: 'Welcome!',
+    subtitle: 'To log in, enter your username.',
+    username: 'Your username',
+    login: 'Sign in',
+    error: 'Invalid username',
+    support: "Don't hesitate to contact us",
+    supportEmail: 'support@mylibraryvault.com',
+  },
+  fr: {
+    title: 'Bonjour!',
+    subtitle: 'Pour vous connecter à votre compte, renseignez votre nom d\'utilisateur.',
+    username: 'Votre nom d\'utilisateur',
+    login: 'Se connecter',
+    error: 'Nom d\'utilisateur invalide',
+    support: "N'hésitez pas à nous contacter",
+    supportEmail: 'support@bonsante.com',
+  },
+  hi: {
+    title: 'नमस्ते!',
+    subtitle: 'लॉगिन करने के लिए अपना उपयोगकर्ता नाम दर्ज करें।',
+    username: 'आपका उपयोगकर्ता नाम',
+    login: 'साइन इन करें',
+    error: 'अमान्य उपयोगकर्ता नाम',
+    support: 'संपर्क करने में संकोच न करें',
+    supportEmail: 'support@mylibraryvault.com',
+  },
+};
+
+function getLang() {
+  return localStorage.getItem('lang') || 'en';
+}
+function setLang(lang) {
+  localStorage.setItem('lang', lang);
+}
+
 function render() {
   console.log('[MyLibraryVault] render() called. user:', user, 'viewingBook:', viewingBook);
   root.innerHTML = '';
@@ -30,23 +68,61 @@ function render() {
 
 function renderLogin() {
   console.log('[MyLibraryVault] renderLogin()');
-  const container = document.createElement('div');
-  container.className = 'centered';
-  // Use the new login form in index.html
-  // Only username is required
-  // Attach event handler to #login-form
+  const lang = getLang();
+  const t = translations[lang];
   root.innerHTML = '';
-  root.appendChild(document.querySelector('.login-container'));
 
+  // Build login card
+  const container = document.createElement('div');
+  container.className = 'login-container';
+  container.innerHTML = `
+    <div class="login-card">
+      <div class="login-left">
+        <div>
+          <div class="login-logo">SecureRead</div>
+          <select class="lang-select" id="lang-select">
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="hi">🇮🇳 हिन्दी</option>
+          </select>
+          <div class="login-title">${t.title}</div>
+          <div class="login-subtitle">${t.subtitle}</div>
+          <form class="login-form" id="login-form">
+            <input id="username" type="text" placeholder="${t.username}" required />
+            <div id="login-error" style="color:red;margin-bottom:8px;"></div>
+            <button class="login-btn" type="submit">${t.login}</button>
+          </form>
+        </div>
+        <div class="support">
+          ${t.support}<br />
+          <a href="mailto:support@secureread.com">support@secureread.com</a>
+        </div>
+      </div>
+      <div class="login-right">
+        <img class="login-image" src="https://images.pexels.com/photos/2041540/pexels-photo-2041540.jpeg" alt="plant" />
+      </div>
+    </div>
+  `;
+  root.appendChild(container);
+
+  // Set language dropdown
+  const langSelect = document.getElementById('lang-select');
+  langSelect.value = lang;
+  langSelect.onchange = (e) => {
+    setLang(e.target.value);
+    renderLogin();
+  };
+
+  // Login form logic
   const form = document.getElementById('login-form');
   form.onsubmit = async e => {
     e.preventDefault();
     const username = form.username.value;
     document.getElementById('login-error').textContent = '';
     try {
-      const u = await window.api.login(username, ''); // Pass empty string for password
+      const u = await window.api.login(username, '');
       if (u) { user = u; render(); }
-      else document.getElementById('login-error').textContent = 'Invalid username';
+      else document.getElementById('login-error').textContent = t.error;
     } catch (err) {
       console.error('[MyLibraryVault] login error:', err);
       document.getElementById('login-error').textContent = 'Authentication error';
