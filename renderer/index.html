@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyLibraryVault</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #eaf7ef;
+      min-height: 100vh;
+      position: relative;
+    }
+    .bg-shape {
+      position: absolute;
+      z-index: 0;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    .login-container {
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      position: relative;
+    }
+    .login-card {
+      display: flex;
+      width: 800px;
+      min-height: 500px;
+      background: #fff;
+      border-radius: 28px;
+      box-shadow: 0 4px 32px #0001;
+      overflow: hidden;
+    }
+    .login-left {
+      flex: 1;
+      padding: 48px 40px 40px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #fff;
+    }
+    .login-logo {
+      font-weight: bold;
+      font-size: 1.3em;
+      color: #222;
+      margin-bottom: 32px;
+    }
+    .login-logo span {
+      color: #3ecf8e;
+    }
+    .lang-select {
+      float: right;
+      font-size: 0.95em;
+      color: #222;
+      margin-bottom: 24px;
+    }
+    .login-title {
+      font-size: 2em;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .login-subtitle {
+      color: #444;
+      font-size: 1em;
+      margin-bottom: 32px;
+    }
+    .login-form input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      background: #f7faf9;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .login-form input:focus {
+      border: 1.5px solid #3ecf8e;
+    }
+    .forgot-link {
+      color: #3ecf8e;
+      font-size: 0.98em;
+      text-decoration: none;
+      margin-bottom: 18px;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .login-btn {
+      width: 100%;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 0;
+      font-size: 1.1em;
+      font-weight: 500;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .login-btn:hover {
+      background: #222;
+    }
+    .support {
+      margin-top: 32px;
+      font-size: 0.98em;
+      color: #888;
+      text-align: center;
+    }
+    .support a {
+      color: #3ecf8e;
+      text-decoration: none;
+    }
+    .login-right {
+      flex: 1;
+      background: #f7faf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0 28px 28px 0;
+      position: absolute;
+      top: 0; left: 0;
+      z-index: 1;
+    }
+    .login-overlay {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.7);
+      border-radius: 18px;
+      padding: 32px 28px;
+      margin: 40px;
+      max-width: 320px;
+      box-shadow: 0 2px 16px #0001;
+    }
+    .overlay-title {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #222;
+    }
+    .overlay-desc {
+      color: #444;
+      font-size: 1em;
+    }
+    @media (max-width: 900px) {
+      .login-card { flex-direction: column; width: 98vw; min-width: 0; }
+      .login-right { display: none; }
+      .login-left { padding: 32px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-shape" style="top: 10%; left: 5%; width: 120px; height: 120px; background: #3ecf8e; border-radius: 50%;"></div>
+  <div class="bg-shape" style="bottom: 8%; right: 8%; width: 80px; height: 80px; background: #3ecf8e; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;"></div>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-left">
+        <div>
+          <div class="login-logo">Bon<span>Santé</span></div>
+          <div class="lang-select">🇫🇷 Fr <span style="font-size:0.8em;">▼</span></div>
+          <div class="login-title">Bonjour!</div>
+          <div class="login-subtitle">Pour vous connecter à votre compte, renseignez votre adresse email ainsi que votre mot de passe.</div>
+          <form class="login-form" id="login-form">
+            <input id="username" type="text" placeholder="Votre adresse email" required />
+            <input id="password" type="password" placeholder="Votre mot de passe" required />
+            <a class="forgot-link" id="forgot-link">Mot de passe oublié?</a>
+            <div id="login-error" style="color:red;margin-bottom:8px;"></div>
+            <button class="login-btn" type="submit">Etape suivante</button>
+          </form>
+        </div>
+        <div class="support">
+          N'hésitez pas à nous contacter<br />
+          <a href="mailto:support@bonsante.com">support@bonsante.com</a>
+        </div>
+      </div>
+      <div class="login-right">
+        <img class="login-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="plant" />
+        <div class="login-overlay">
+          <div class="overlay-title">Precision medicine is the new gold standard for cancer treatment</div>
+          <div class="overlay-desc">The resulting interactive report includes updated information about approved or investigational treatments for each patient.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html> 
