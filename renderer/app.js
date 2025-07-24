@@ -340,6 +340,13 @@ function renderViewer(book) {
 console.log('[MyLibraryVault] Initial render');
 render();
 
+// Ensure dashboard.js is loaded
+if (!window.renderDashboard) {
+  const script = document.createElement('script');
+  script.src = 'dashboard.js';
+  document.head.appendChild(script);
+}
+
 // Add spinner CSS
 const style = document.createElement('style');
 style.innerHTML = `
