@@ -78,6 +78,7 @@ function showSuccessDialog(message, callback) {
       <div class="modal-backdrop"></div>
       <div class="modal-content success">
         <div class="modal-message"></div>
+        <div class="modal-tip"></div>
         <button class="modal-close">OK</button>
       </div>
     `;
@@ -93,7 +94,10 @@ function showSuccessDialog(message, callback) {
       }
     };
   }
-  modal.querySelector('.modal-message').textContent = message;
+  modal.querySelector('.modal-message').textContent =
+    'You have successfully logged in to SecureRead.\n\nWelcome to your secure digital library!';
+  modal.querySelector('.modal-tip').textContent =
+    'Tip: Use the search and navigation features to quickly find and read your books. All your content is protected and available offline for your convenience.';
   modal.style.display = 'flex';
 }
 
@@ -450,8 +454,18 @@ style.innerHTML += `
   font-size: 1.13em;
   color: #219653;
   margin-bottom: 0;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.01em;
+  font-family: 'Urbanist', 'Segoe UI', Arial, sans-serif;
+  white-space: pre-line;
+}
+#secure-modal-success .modal-tip {
+  font-size: 1em;
+  color: #444;
+  margin-top: 8px;
+  font-family: 'Urbanist', 'Segoe UI', Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
 }
 #secure-modal-success .modal-close {
   background: #3ecf8e;
