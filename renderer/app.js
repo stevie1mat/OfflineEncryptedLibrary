@@ -348,22 +348,6 @@ function renderViewer(book) {
 console.log('[MyLibraryVault] Initial render');
 render();
 
-// Ensure dashboard.js is loaded
-if (!window.renderDashboard) {
-  console.log('[SecureRead] Attempting to load dashboard.js...');
-  const script = document.createElement('script');
-  script.src = 'dashboard.js';
-  script.onload = () => {
-    console.log('[SecureRead] dashboard.js loaded. renderDashboard:', typeof window.renderDashboard);
-  };
-  script.onerror = () => {
-    console.error('[SecureRead] Failed to load dashboard.js');
-  };
-  document.head.appendChild(script);
-} else {
-  console.log('[SecureRead] dashboard.js already loaded.');
-}
-
 // Add spinner CSS
 const style = document.createElement('style');
 style.innerHTML = `
