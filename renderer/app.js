@@ -18,19 +18,19 @@ if (!root) {
 const translations = {
   en: {
     title: 'Welcome!',
-    subtitle: 'To log in, enter your username.',
-    username: 'Your username',
+    subtitle: 'To log in, enter your library ID.',
+    username: 'Your library ID',
     login: 'Sign in',
-    error: 'Invalid username',
+    error: 'Please enter a valid email ID',
     support: "Don't hesitate to contact us",
     supportEmail: 'support@secureread.com',
   },
   hi: {
     title: 'नमस्ते!',
-    subtitle: 'लॉगिन करने के लिए अपना उपयोगकर्ता नाम दर्ज करें।',
-    username: 'आपका उपयोगकर्ता नाम',
+    subtitle: 'लॉगिन करने के लिए अपनी लाइब्रेरी आईडी दर्ज करें।',
+    username: 'आपकी लाइब्रेरी आईडी',
     login: 'साइन इन करें',
-    error: 'अमान्य उपयोगकर्ता नाम',
+    error: 'कृपया एक मान्य ईमेल आईडी दर्ज करें',
     support: 'संपर्क करने में संकोच न करें',
     supportEmail: 'support@secureread.com',
   },
@@ -41,6 +41,60 @@ function getLang() {
 }
 function setLang(lang) {
   localStorage.setItem('lang', lang);
+}
+
+function showDialog(message) {
+  let modal = document.getElementById('secure-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'secure-modal';
+    modal.innerHTML = `
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-message"></div>
+        <button class="modal-close">OK</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('.modal-close').onclick = () => {
+      modal.style.display = 'none';
+    };
+    modal.onclick = (e) => {
+      if (e.target.classList.contains('modal-backdrop')) {
+        modal.style.display = 'none';
+      }
+    };
+  }
+  modal.querySelector('.modal-message').textContent = message;
+  modal.style.display = 'flex';
+}
+
+function showSuccessDialog(message, callback) {
+  let modal = document.getElementById('secure-modal-success');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'secure-modal-success';
+    modal.innerHTML = `
+      <div class="modal-backdrop"></div>
+      <div class="modal-content success">
+        <div class="modal-message"></div>
+        <button class="modal-close">OK</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('.modal-close').onclick = () => {
+      modal.style.display = 'none';
+      if (callback) callback();
+    };
+    modal.onclick = (e) => {
+      if (e.target.classList.contains('modal-backdrop')) {
+        modal.style.display = 'none';
+        if (callback) callback();
+      }
+    };
+  }
+  modal.querySelector('.modal-message').textContent = message;
+  modal.style.display = 'flex';
 }
 
 function render() {
@@ -88,7 +142,6 @@ function renderLogin() {
     <div class="login-card">
       <div class="login-left">
         <div>
-          <div class="login-logo">SecureRead</div>
           <div class="login-title">${t.title}</div>
           <div class="login-subtitle">${t.subtitle}</div>
           <form class="login-form" id="login-form">
@@ -111,13 +164,22 @@ function renderLogin() {
     e.preventDefault();
     const username = form.username.value;
     document.getElementById('login-error').textContent = '';
+    const btn = form.querySelector('.login-btn');
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.innerHTML = '<span class="spinner"></span>' + originalText;
     try {
       const u = await window.api.login(username, '');
-      if (u) { user = u; render(); }
-      else document.getElementById('login-error').textContent = t.error;
+      if (u) {
+        showSuccessDialog('Login successful!', () => { user = u; render(); });
+      }
+      else showDialog(t.error);
     } catch (err) {
       console.error('[MyLibraryVault] login error:', err);
-      document.getElementById('login-error').textContent = 'Authentication error';
+      showDialog('Authentication error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
   };
 }
@@ -267,4 +329,146 @@ function renderViewer(book) {
 
 // Initial render
 console.log('[MyLibraryVault] Initial render');
-render(); 
+render();
+
+// Add spinner CSS
+const style = document.createElement('style');
+style.innerHTML = `
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #fff;
+  border-top: 2.5px solid #3ecf8e;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}`;
+document.head.appendChild(style);
+
+// Add modal CSS
+style.innerHTML += `
+#secure-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; right: 0; bottom: 0;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Urbanist', 'Segoe UI', Arial, sans-serif;
+}
+#secure-modal .modal-backdrop {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(30, 41, 59, 0.18);
+  backdrop-filter: blur(2px);
+}
+#secure-modal .modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px #0002;
+  padding: 36px 36px 24px 36px;
+  min-width: 280px;
+  max-width: 92vw;
+  text-align: center;
+  z-index: 2;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  border: 1.5px solid #eaf7ef;
+}
+#secure-modal .modal-message {
+  font-size: 1.13em;
+  color: #d32f2f;
+  margin-bottom: 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+#secure-modal .modal-close {
+  background: #3ecf8e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 36px;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #3ecf8e22;
+  font-weight: 500;
+  outline: none;
+}
+#secure-modal .modal-close:hover, #secure-modal .modal-close:focus {
+  background: #2da06a;
+  box-shadow: 0 4px 16px #3ecf8e33;
+}
+`;
+
+// Add success modal CSS
+style.innerHTML += `
+#secure-modal-success {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; right: 0; bottom: 0;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Urbanist', 'Segoe UI', Arial, sans-serif;
+}
+#secure-modal-success .modal-backdrop {
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(30, 41, 59, 0.12);
+  backdrop-filter: blur(2px);
+}
+#secure-modal-success .modal-content.success {
+  position: relative;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px #0002;
+  padding: 36px 36px 24px 36px;
+  min-width: 280px;
+  max-width: 92vw;
+  text-align: center;
+  z-index: 2;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  border: 1.5px solid #eaf7ef;
+}
+#secure-modal-success .modal-message {
+  font-size: 1.13em;
+  color: #219653;
+  margin-bottom: 0;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+#secure-modal-success .modal-close {
+  background: #3ecf8e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 36px;
+  font-size: 1em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px #3ecf8e22;
+  font-weight: 500;
+  outline: none;
+}
+#secure-modal-success .modal-close:hover, #secure-modal-success .modal-close:focus {
+  background: #2da06a;
+  box-shadow: 0 4px 16px #3ecf8e33;
+}
+`; 
