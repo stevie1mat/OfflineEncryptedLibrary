@@ -156,6 +156,25 @@
       color: #444;
       font-size: 1em;
     }
+    .global-lang-select {
+      position: absolute;
+      top: 32px;
+      right: 40px;
+      z-index: 10;
+      border-radius: 18px;
+      border: none;
+      box-shadow: 0 2px 12px #0001;
+      padding: 8px 18px 8px 12px;
+      font-size: 1em;
+      background: #fff;
+      outline: none;
+      cursor: pointer;
+      font-family: 'Urbanist', 'Segoe UI', Arial, sans-serif;
+      transition: box-shadow 0.2s;
+    }
+    .global-lang-select:focus {
+      box-shadow: 0 4px 16px #3ecf8e33;
+    }
     @media (max-width: 900px) {
       .login-card { flex-direction: column; width: 98vw; min-width: 0; }
       .login-right { display: none; }

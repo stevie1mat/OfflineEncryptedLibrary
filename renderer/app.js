@@ -23,16 +23,7 @@ const translations = {
     login: 'Sign in',
     error: 'Invalid username',
     support: "Don't hesitate to contact us",
-    supportEmail: 'support@mylibraryvault.com',
-  },
-  fr: {
-    title: 'Bonjour!',
-    subtitle: 'Pour vous connecter à votre compte, renseignez votre nom d\'utilisateur.',
-    username: 'Votre nom d\'utilisateur',
-    login: 'Se connecter',
-    error: 'Nom d\'utilisateur invalide',
-    support: "N'hésitez pas à nous contacter",
-    supportEmail: 'support@bonsante.com',
+    supportEmail: 'support@secureread.com',
   },
   hi: {
     title: 'नमस्ते!',
@@ -41,7 +32,7 @@ const translations = {
     login: 'साइन इन करें',
     error: 'अमान्य उपयोगकर्ता नाम',
     support: 'संपर्क करने में संकोच न करें',
-    supportEmail: 'support@mylibraryvault.com',
+    supportEmail: 'support@secureread.com',
   },
 };
 
@@ -72,6 +63,24 @@ function renderLogin() {
   const t = translations[lang];
   root.innerHTML = '';
 
+  // Add language dropdown at top right
+  let langDropdown = document.getElementById('global-lang-select');
+  if (!langDropdown) {
+    langDropdown = document.createElement('select');
+    langDropdown.id = 'global-lang-select';
+    langDropdown.className = 'global-lang-select';
+    langDropdown.innerHTML = `
+      <option value="en">🇬🇧 English</option>
+      <option value="hi">🇮🇳 हिन्दी</option>
+    `;
+    document.body.appendChild(langDropdown);
+  }
+  langDropdown.value = lang;
+  langDropdown.onchange = (e) => {
+    setLang(e.target.value);
+    renderLogin();
+  };
+
   // Build login card
   const container = document.createElement('div');
   container.className = 'login-container';
@@ -80,11 +89,6 @@ function renderLogin() {
       <div class="login-left">
         <div>
           <div class="login-logo">SecureRead</div>
-          <select class="lang-select" id="lang-select">
-            <option value="en">🇬🇧 English</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="hi">🇮🇳 हिन्दी</option>
-          </select>
           <div class="login-title">${t.title}</div>
           <div class="login-subtitle">${t.subtitle}</div>
           <form class="login-form" id="login-form">
@@ -93,10 +97,6 @@ function renderLogin() {
             <button class="login-btn" type="submit">${t.login}</button>
           </form>
         </div>
-        <div class="support">
-          ${t.support}<br />
-          <a href="mailto:support@secureread.com">support@secureread.com</a>
-        </div>
       </div>
       <div class="login-right">
         <img class="login-image" src="https://images.pexels.com/photos/2041540/pexels-photo-2041540.jpeg" alt="plant" />
@@ -104,14 +104,6 @@ function renderLogin() {
     </div>
   `;
   root.appendChild(container);
-
-  // Set language dropdown
-  const langSelect = document.getElementById('lang-select');
-  langSelect.value = lang;
-  langSelect.onchange = (e) => {
-    setLang(e.target.value);
-    renderLogin();
-  };
 
   // Login form logic
   const form = document.getElementById('login-form');
